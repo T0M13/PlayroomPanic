@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerReferences playerReferences;
@@ -68,7 +69,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Move();
+        if (IsOwner)
+        {
+            Move();
+        }
     }
 
     private void Move()
@@ -87,6 +91,8 @@ public class PlayerMovement : MonoBehaviour
             isMoving = false;
         }
     }
+
+
 
     private void OnDrawGizmos()
     {
@@ -110,11 +116,13 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext value)
     {
+        if (!IsOwner) return;
         movement = value.ReadValue<Vector2>();
     }
 
     public void OnSprint(InputAction.CallbackContext value)
     {
+        if (!IsOwner) return;
         isSprinting = value.ReadValue<float>() >= 1f;
     }
 
