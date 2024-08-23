@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerReferences playerReferences;
@@ -69,10 +69,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (IsOwner)
-        {
+        //if (!IsOwner) { return; }
             Move();
-        }
     }
 
     private void Move()
@@ -116,13 +114,13 @@ public class PlayerMovement : NetworkBehaviour
 
     public void OnMove(InputAction.CallbackContext value)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         movement = value.ReadValue<Vector2>();
     }
 
     public void OnSprint(InputAction.CallbackContext value)
     {
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
         isSprinting = value.ReadValue<float>() >= 1f;
     }
 

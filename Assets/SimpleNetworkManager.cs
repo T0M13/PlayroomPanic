@@ -36,4 +36,5 @@ public class SimpleNetworkManager : MonoBehaviour
     {
         Debug.Log("SimpleNetworkManager disabled");
     }
+
 }
