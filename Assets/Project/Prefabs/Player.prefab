@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7538303044468698746}
   - component: {fileID: 7192097588361570036}
   - component: {fileID: 4312160738201618662}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RightHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,6 +105,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &4693645703221952913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8406509864152281966}
+  m_Layer: 3
+  m_Name: PickUpParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8406509864152281966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4693645703221952913}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.45, z: 1.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6635055016450730198}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8133348863576279254
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +148,7 @@ GameObject:
   - component: {fileID: 218576300039159155}
   - component: {fileID: 2471493303481187659}
   - component: {fileID: 7332009205044736744}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LeftHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,6 +252,7 @@ GameObject:
   - component: {fileID: 6635055016450730198}
   - component: {fileID: 3362188493701549671}
   - component: {fileID: 7857761250000440278}
+  - component: {fileID: 7023349014442235081}
   - component: {fileID: 7889897351039926184}
   - component: {fileID: 1514345655934248340}
   - component: {fileID: 5811023797091362841}
@@ -230,7 +262,7 @@ GameObject:
   - component: {fileID: 3582059613910284146}
   - component: {fileID: -5322831455787205907}
   - component: {fileID: -3224950647506773144}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,6 +285,7 @@ Transform:
   - {fileID: 4690635706811078717}
   - {fileID: 7294963493121363893}
   - {fileID: 8979952283656559823}
+  - {fileID: 8406509864152281966}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3362188493701549671
@@ -290,10 +323,35 @@ MonoBehaviour:
   isSprinting: 0
   isMoving: 0
   lastMoveDirection: {x: 0, y: 0, z: 0}
-  gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  gizmoColor: {r: 0.12259703, g: 0.8106604, b: 0.8962264, a: 1}
   gizmoLineLength: 2
   gizmoSphereRadius: 0.1
   showGizmos: 1
+--- !u!114 &7023349014442235081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8371724419517990842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ecd1e85e247a8a4a8bdedf0654f20db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupHeight: 0.7
+  pickupRadius: 1.5
+  pickupOffset: {x: 0, y: 0, z: 0}
+  dropHeight: 1
+  dropRadius: 1
+  dropOffset: {x: 0, y: 0, z: 0}
+  dropLayerMask:
+    serializedVersion: 2
+    m_Bits: 72
+  pickedUpParent: {fileID: 8406509864152281966}
+  gizmoColor: {r: 0, g: 1, b: 0.8264365, a: 1}
+  showGizmos: 1
+  isHolding: 0
 --- !u!114 &7889897351039926184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,7 +419,19 @@ MonoBehaviour:
     m_ActionId: c43b877d-2b4c-48bf-949c-cfe0ee7f6a6a
     m_ActionName: Player/Sprint[/Keyboard/shift]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7023349014442235081}
+        m_TargetAssemblyTypeName: PlayerPickup, Assembly-CSharp
+        m_MethodName: OnInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 342a5b03-1163-4914-8ae4-f07ebb4a7a58
     m_ActionName: Player/Interact[/Keyboard/e]
   - m_PersistentCalls:
@@ -519,7 +589,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 1
 --- !u!114 &5387156751371126219
 MonoBehaviour:
@@ -607,7 +677,7 @@ GameObject:
   - component: {fileID: 1404652647192615650}
   - component: {fileID: 8557493275183452446}
   - component: {fileID: 3649050471830596078}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,7 +693,7 @@ Transform:
   m_GameObject: {fileID: 8927681473203091217}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.422, z: 0.38}
+  m_LocalPosition: {x: 0, y: 0.422, z: 0.319}
   m_LocalScale: {x: 0.75, y: 0.33, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -694,7 +764,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

@@ -14,6 +14,8 @@ public class PlayerReferences : MonoBehaviour
     [Header("References Plus")]
     [SerializeField] private Rigidbody playerRigidBody;
     [SerializeField] private CapsuleCollider playerCollider;
+    [Header("Settings")]
+    [SerializeField][ShowOnly] private Vector3 spawnedPosition;
 
     public PlayerMovement PlayerMovement { get => playerMovement; set => playerMovement = value; }
     public Rigidbody PlayerRigidBody { get => playerRigidBody; set => playerRigidBody = value; }
@@ -23,6 +25,11 @@ public class PlayerReferences : MonoBehaviour
     private void Awake()
     {
         GetReferences();
+    }
+
+    private void Start()
+    {
+        SetSpawnPosition();
     }
 
     private void OnValidate()
@@ -81,6 +88,16 @@ public class PlayerReferences : MonoBehaviour
         }
 
 
+    }
+
+    private void SetSpawnPosition()
+    {
+        spawnedPosition = transform.position;
+    }
+
+    public void RespawnAtSpawnPosition()
+    {
+        transform.position = spawnedPosition;
     }
 
 }

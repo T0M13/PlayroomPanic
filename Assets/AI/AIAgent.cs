@@ -5,10 +5,12 @@ using UnityEngine.AI;
 using AI_Needs;
 using AI_Traits;
 
-public class AIAgent : MonoBehaviour
+public class AIAgent : MonoBehaviour, IHoldableObject
 {
     [Header("References")]
     [SerializeField] private NavMeshAgent navMeshAgent;
+    [SerializeField] private Collider aiCollider;
+    [SerializeField] private Rigidbody aiBody;
     [Header("Tasks")]
     public List<AIBrain> availableTasks = new List<AIBrain>();
     [SerializeField][ShowOnly] private AIBrain currentTask;
@@ -21,6 +23,13 @@ public class AIAgent : MonoBehaviour
     public Playfulness playfulness = new Playfulness();
 
     [Header("Settings")]
+    [SerializeField] private Vector3 spawnPoint;
+    [SerializeField] private Vector3 spawnPointOffset;
+    [SerializeField][ShowOnly] private bool isPickedUp = false;
+    [SerializeField][ShowOnly] private bool shouldFixate = true;
+    [SerializeField][ShowOnly] private bool isPlaced = false;
+
+    [Header("Gizmos")]
     [SerializeField] private bool showGizmos = true;
 
     public NavMeshAgent NavMeshAgent { get => navMeshAgent; set => navMeshAgent = value; }
@@ -36,16 +45,30 @@ public class AIAgent : MonoBehaviour
         GetReferences();
     }
 
+    private void Start()
+    {
+        SetSpawnPoint(transform.position);
+    }
+
     private void GetReferences()
     {
         if (NavMeshAgent == null)
         {
-            GetComponent<NavMeshAgent>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
+        }
+        if (aiCollider == null)
+        {
+            aiCollider = GetComponent<CapsuleCollider>();
+        }
+        if (aiBody == null)
+        {
+            aiBody = GetComponent<Rigidbody>();
         }
     }
 
     private void Update()
     {
+        if (isPickedUp || isPlaced) return;
         if (currentTask == null || currentTask.ShouldSwitch(this))
         {
             currentTask = ChooseBestTask();
@@ -81,4 +104,57 @@ public class AIAgent : MonoBehaviour
         return bestTask;
     }
 
+    public bool IsBeingHeld()
+    {
+        return isPickedUp;
+    }
+
+    public GameObject ObjectBeingHeld()
+    {
+        return this.gameObject;
+    }
+
+    public void SetIsBeingHeld(bool value)
+    {
+        isPickedUp = value;
+    }
+
+    public NavMeshAgent NavMeshAgentOfObject()
+    {
+        return navMeshAgent;
+    }
+
+    public Rigidbody RigidbodyOfObject()
+    {
+        return aiBody;
+    }
+
+    public Collider ColliderOfObject()
+    {
+        return aiCollider;
+    }
+    public void SetSpawnPoint(Vector3 position)
+    {
+        spawnPoint = position;
+    }
+
+    public void Respawn()
+    {
+        transform.position = spawnPoint + spawnPointOffset;
+    }
+
+    public bool ShouldFixate()
+    {
+        return shouldFixate;
+    }
+
+    public bool IsPlaced()
+    {
+        return isPlaced;
+    }
+
+    public void SetIsPlaced(bool value)
+    {
+       isPlaced = value;
+    }
 }
