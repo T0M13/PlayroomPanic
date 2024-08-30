@@ -2644,7 +2644,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placementPoint: {fileID: 1703342609}
+  gobjOnPlacementZone: {fileID: 0}
   isOccupied: 0
+  placementLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  lastOriginalLayer: 0
 --- !u!1 &1800773253
 GameObject:
   m_ObjectHideFlags: 0
