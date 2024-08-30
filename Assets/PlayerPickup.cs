@@ -24,6 +24,68 @@ public class PlayerPickup : MonoBehaviour
     [SerializeField][ShowOnly] IHoldableObject currentHoldableObject;
     [SerializeField][ShowOnly] private bool isHolding = false;
 
+    private IHoldableObject lastHighlightedObject;
+
+    private void HighlightObjectsInRange()
+    {
+        Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
+        Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
+
+        RaycastHit[] hits = Physics.CapsuleCastAll(capsuleStart, capsuleEnd, pickupRadius, Vector3.forward, 0f);
+        IHoldableObject closestHoldableObject = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (var hit in hits)
+        {
+            IHoldableObject holdableObject = hit.collider.GetComponent<IHoldableObject>();
+            if (holdableObject != null && !holdableObject.IsBeingHeld())
+            {
+                Vector3 closestPointOnCapsule = ClosestPointOnLineSegment(capsuleStart, capsuleEnd, holdableObject.ObjectBeingHeld().transform.position);
+                float distance = Vector3.Distance(closestPointOnCapsule, holdableObject.ObjectBeingHeld().transform.position);
+
+                if (distance <= pickupRadius && distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestHoldableObject = holdableObject;
+                }
+            }
+        }
+
+        if (closestHoldableObject != null)
+        {
+            if (lastHighlightedObject != closestHoldableObject)
+            {
+                UnhighlightLastObject();
+                HighlightObject(closestHoldableObject);
+                lastHighlightedObject = closestHoldableObject;
+            }
+            else
+            {
+                UnhighlightLastObject();
+                HighlightObject(closestHoldableObject);
+                lastHighlightedObject = closestHoldableObject;
+            }
+        }
+        else
+        {
+            UnhighlightLastObject();
+        }
+    }
+
+    private void UnhighlightLastObject()
+    {
+        if (lastHighlightedObject != null)
+        {
+            UnhighlightObject(lastHighlightedObject);
+            lastHighlightedObject = null;
+        }
+    }
+
+    private void Update()
+    {
+        if (!isHolding)
+            HighlightObjectsInRange();
+    }
 
     private void CheckForHoldable()
     {
