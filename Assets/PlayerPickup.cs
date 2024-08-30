@@ -17,53 +17,90 @@ public class PlayerPickup : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private LayerMask dropLayerMask;
     [SerializeField] private Transform pickedUpParent = null;
+    [SerializeField][ShowOnly] IHoldableObject currentHoldableObject;
+    [SerializeField][ShowOnly] GameObject currentHoldableGameObject;
+    [SerializeField][ShowOnly] private IHoldableObject lastHighlightedObject;
+    [SerializeField][ShowOnly] private GameObject lastHighlightedGameObject;
+    [SerializeField][ShowOnly] private bool isHolding = false;
+
+
+    [SerializeField][ShowOnly] private Vector3 pickupCapsuleStart, pickupCapsuleEnd;
+    [SerializeField][ShowOnly] private Vector3 dropCapsuleStart, dropCapsuleEnd;
     [Header("Gizmos")]
     [SerializeField] private Color gizmoColor = Color.red;
     [SerializeField] private bool showGizmos = true;
 
-    [SerializeField][ShowOnly] IHoldableObject currentHoldableObject;
-    [SerializeField][ShowOnly] private bool isHolding = false;
 
-    private IHoldableObject lastHighlightedObject;
-
-    private void HighlightObjectsInRange()
+    private void Update()
     {
-        Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
-        Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
+        UpdateCapsules();
+        CheckForHoldable();
+        //CheckDropPlacementZone();
+    }
 
-        RaycastHit[] hits = Physics.CapsuleCastAll(capsuleStart, capsuleEnd, pickupRadius, Vector3.forward, 0f);
-        IHoldableObject closestHoldableObject = null;
+    /// <summary>
+    /// Updates Caspules for pick and drop
+    /// </summary>
+    private void UpdateCapsules()
+    {
+        if (!isHolding)
+        {
+            pickupCapsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
+            pickupCapsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
+        }
+        else
+        {
+            dropCapsuleStart = pickedUpParent.position + dropOffset - Vector3.up * (dropHeight / 2);
+            dropCapsuleEnd = pickedUpParent.position + dropOffset + Vector3.up * (dropHeight / 2);
+        }
+    }
+
+    /// <summary>
+    /// Checks for holdable objects
+    /// </summary>
+    private void CheckForHoldable()
+    {
+
+        if (isHolding) return;
+
+        RaycastHit[] hits = Physics.CapsuleCastAll(pickupCapsuleStart, pickupCapsuleEnd, pickupRadius, Vector3.forward, 0f);
         float closestDistance = float.MaxValue;
+        currentHoldableObject = null;
+        currentHoldableGameObject = null;
 
         foreach (var hit in hits)
         {
             IHoldableObject holdableObject = hit.collider.GetComponent<IHoldableObject>();
             if (holdableObject != null && !holdableObject.IsBeingHeld())
             {
-                Vector3 closestPointOnCapsule = ClosestPointOnLineSegment(capsuleStart, capsuleEnd, holdableObject.ObjectBeingHeld().transform.position);
+                Vector3 closestPointOnCapsule = ClosestPointOnLineSegment(pickupCapsuleStart, pickupCapsuleEnd, holdableObject.ObjectBeingHeld().transform.position);
                 float distance = Vector3.Distance(closestPointOnCapsule, holdableObject.ObjectBeingHeld().transform.position);
 
                 if (distance <= pickupRadius && distance < closestDistance)
                 {
                     closestDistance = distance;
-                    closestHoldableObject = holdableObject;
+                    currentHoldableObject = holdableObject;
+                    currentHoldableGameObject = currentHoldableObject.ObjectBeingHeld();
                 }
+
             }
         }
 
-        if (closestHoldableObject != null)
+        if (currentHoldableObject != null)
         {
-            if (lastHighlightedObject != closestHoldableObject)
+            if (lastHighlightedObject != currentHoldableObject)
             {
                 UnhighlightLastObject();
-                HighlightObject(closestHoldableObject);
-                lastHighlightedObject = closestHoldableObject;
+                HighlightObject(currentHoldableObject.ObjectBeingHeld());
+                lastHighlightedObject = currentHoldableObject;
+                lastHighlightedGameObject = currentHoldableGameObject;
             }
             else
             {
                 UnhighlightLastObject();
-                HighlightObject(closestHoldableObject);
-                lastHighlightedObject = closestHoldableObject;
+                HighlightObject(currentHoldableObject.ObjectBeingHeld());
+                lastHighlightedObject = currentHoldableObject;
+                lastHighlightedGameObject = currentHoldableGameObject;
             }
         }
         else
@@ -72,48 +109,13 @@ public class PlayerPickup : MonoBehaviour
         }
     }
 
-    private void UnhighlightLastObject()
-    {
-        if (lastHighlightedObject != null)
-        {
-            UnhighlightObject(lastHighlightedObject);
-            lastHighlightedObject = null;
-        }
-    }
-
-    private void Update()
-    {
-        if (!isHolding)
-            HighlightObjectsInRange();
-    }
-
-    private void CheckForHoldable()
-    {
-        Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
-        Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
-
-        RaycastHit[] hits = Physics.CapsuleCastAll(capsuleStart, capsuleEnd, pickupRadius, Vector3.forward, 0f);
-        float closestDistance = float.MaxValue;
-        currentHoldableObject = null;
-
-        foreach (var hit in hits)
-        {
-            IHoldableObject holdableObject = hit.collider.GetComponent<IHoldableObject>();
-            if (holdableObject != null && !holdableObject.IsBeingHeld())
-            {
-                Vector3 closestPointOnCapsule = ClosestPointOnLineSegment(capsuleStart, capsuleEnd, holdableObject.ObjectBeingHeld().transform.position);
-                float distance = Vector3.Distance(closestPointOnCapsule, holdableObject.ObjectBeingHeld().transform.position);
-
-                if (distance <= pickupRadius && distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    currentHoldableObject = holdableObject;
-                }
-
-            }
-        }
-    }
-
+    /// <summary>
+    /// Checks the closes object to the player
+    /// </summary>
+    /// <param name="lineStart"></param>
+    /// <param name="lineEnd"></param>
+    /// <param name="point"></param>
+    /// <returns></returns>
     private Vector3 ClosestPointOnLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
     {
         Vector3 lineDirection = lineEnd - lineStart;
@@ -126,12 +128,14 @@ public class PlayerPickup : MonoBehaviour
         return lineStart + lineDirection * projectLength;
     }
 
-
+    /// <summary>
+    /// Picks up the current holdable object
+    /// </summary>
     private void PickUp()
     {
         if (currentHoldableObject != null && CanPickUp())
         {
-            UnhighlightObject(currentHoldableObject);
+            UnhighlightObject(currentHoldableObject.ObjectBeingHeld());
 
             CheckPickUpPlacementZone(currentHoldableObject);
 
@@ -151,22 +155,19 @@ public class PlayerPickup : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if the holdable object can be picked up
+    /// </summary>
+    /// <returns></returns>
     private bool CanPickUp()
     {
-
-
-        Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
-        Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
-
-        Collider[] colliders = Physics.OverlapCapsule(capsuleStart, capsuleEnd, pickupRadius);
+        Collider[] colliders = Physics.OverlapCapsule(pickupCapsuleStart, pickupCapsuleEnd, pickupRadius);
 
         foreach (Collider collider in colliders)
         {
             IHoldableObject holdableObject = collider.GetComponent<IHoldableObject>();
             if (holdableObject != null && !holdableObject.IsBeingHeld())
             {
-
-
                 return true;
             }
         }
@@ -174,6 +175,9 @@ public class PlayerPickup : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Drops the current object held
+    /// </summary>
     private void Drop()
     {
         if (currentHoldableObject != null && CanDrop())
@@ -186,55 +190,73 @@ public class PlayerPickup : MonoBehaviour
             if (currentHoldableObject.RigidbodyOfObject() != null)
                 currentHoldableObject.RigidbodyOfObject().isKinematic = false;
 
-            CheckDropPlacementZone(currentHoldableObject);
+            //if (CheckDropPlacementZone())
+            //{
+            DropPlacementZone(currentHoldableObject);
+            //}
 
             currentHoldableObject = null;
+            currentHoldableGameObject = null;
             isHolding = false;
         }
     }
 
-
+    /// <summary>
+    /// Returns a bool if the curentobject held can be dropped
+    /// </summary>
+    /// <returns></returns>
     private bool CanDrop()
     {
         if (currentHoldableObject == null)
-        {
             return false;
-        }
 
-        Vector3 capsuleStart = pickedUpParent.position + dropOffset - Vector3.up * (dropHeight / 2);
-        Vector3 capsuleEnd = pickedUpParent.position + dropOffset + Vector3.up * (dropHeight / 2);
-
-        Collider[] colliders = Physics.OverlapCapsule(capsuleStart, capsuleEnd, dropRadius);
+        Collider[] colliders = Physics.OverlapCapsule(dropCapsuleStart, dropCapsuleEnd, dropRadius);
 
         foreach (Collider collider in colliders)
         {
-
             if (collider != currentHoldableObject.ColliderOfObject())
             {
                 if (((1 << collider.gameObject.layer) & dropLayerMask) == 0)
-                {
                     return false;
-                }
             }
         }
 
         return true;
     }
 
-    private void CheckDropPlacementZone(IHoldableObject holdableObject)
-    {
-        Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
-        Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
+    //private bool CheckDropPlacementZone()
+    //{
+    //    if (!isHolding)
+    //        return false;
 
-        Collider[] colliders = Physics.OverlapCapsule(capsuleStart, capsuleEnd, dropRadius);
+    //    Collider[] colliders = Physics.OverlapCapsule(dropCapsuleStart, dropCapsuleEnd, dropRadius);
+    //    PlacementZone placementZone = null;
+    //    foreach (Collider collider in colliders)
+    //    {
+    //        placementZone = collider.GetComponent<PlacementZone>();
+    //        if (placementZone != null)
+    //        {
+    //            if (placementZone.GetComponent<HighlightObject>())
+    //            {
+    //                HighlightObject(placementZone.gameObject);
+    //            }
+    //            return true;
+    //        }
+    //    }
+
+    //    return false;
+    //}
+
+    private void DropPlacementZone(IHoldableObject holdableObject)
+    {
+        Collider[] colliders = Physics.OverlapCapsule(dropCapsuleStart, dropCapsuleEnd, dropRadius);
 
         foreach (Collider collider in colliders)
         {
             PlacementZone placementZone = collider.GetComponent<PlacementZone>();
-            if (placementZone != null)
+            if (placementZone != null && !placementZone.IsOccupied && placementZone.ObjOnPlacementZone == null)
             {
                 placementZone.PlaceObject(holdableObject);
-                holdableObject.SetIsPlaced(true);
                 break;
             }
         }
@@ -242,18 +264,14 @@ public class PlayerPickup : MonoBehaviour
 
     private void CheckPickUpPlacementZone(IHoldableObject holdableObject)
     {
-        Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
-        Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
-
-        Collider[] colliders = Physics.OverlapCapsule(capsuleStart, capsuleEnd, dropRadius);
+        Collider[] colliders = Physics.OverlapCapsule(pickupCapsuleStart, pickupCapsuleEnd, pickupRadius);
 
         foreach (Collider collider in colliders)
         {
             PlacementZone placementZone = collider.GetComponent<PlacementZone>();
-            if (placementZone != null)
+            if (placementZone != null && placementZone.IsOccupied && holdableObject == placementZone.ObjOnPlacementZone)
             {
                 placementZone.RemoveObject(holdableObject);
-                holdableObject.SetIsPlaced(false);
                 break;
             }
         }
@@ -270,71 +288,66 @@ public class PlayerPickup : MonoBehaviour
             }
             else
             {
-                CheckForHoldable();
-                if (currentHoldableObject != null)
-                {
-                    PickUp();
-                }
+                PickUp();
             }
         }
     }
 
-    private void HighlightObject(IHoldableObject holdableObject)
+    private void HighlightObject(GameObject highlightobject)
     {
-        var highlightScript = holdableObject.ObjectBeingHeld().GetComponent<HighlightObject>();
+        var highlightScript = highlightobject.GetComponent<HighlightObject>();
         if (highlightScript != null)
         {
             highlightScript.Highlight();
         }
     }
 
-    private void UnhighlightObject(IHoldableObject holdableObject)
+    private void UnhighlightObject(GameObject highlightobject)
     {
-        var highlightScript = holdableObject.ObjectBeingHeld().GetComponent<HighlightObject>();
+        var highlightScript = highlightobject.GetComponent<HighlightObject>();
         if (highlightScript != null)
         {
             highlightScript.Unhighlight();
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void UnhighlightLastObject()
     {
-        if (showGizmos)
+        if (lastHighlightedObject != null)
         {
-            if (currentHoldableObject == null)
-            {
-                Gizmos.color = Color.green;
-
-                Vector3 capsuleStart = pickedUpParent.position + pickupOffset - Vector3.up * (pickupHeight / 2);
-                Vector3 capsuleEnd = pickedUpParent.position + pickupOffset + Vector3.up * (pickupHeight / 2);
-
-                Gizmos.DrawWireSphere(capsuleStart, pickupRadius);
-                Gizmos.DrawWireSphere(capsuleEnd, pickupRadius);
-                Gizmos.DrawLine(capsuleStart + Vector3.forward * pickupRadius, capsuleEnd + Vector3.forward * pickupRadius);
-                Gizmos.DrawLine(capsuleStart - Vector3.forward * pickupRadius, capsuleEnd - Vector3.forward * pickupRadius);
-                Gizmos.DrawLine(capsuleStart + Vector3.right * pickupRadius, capsuleEnd + Vector3.right * pickupRadius);
-                Gizmos.DrawLine(capsuleStart - Vector3.right * pickupRadius, capsuleEnd - Vector3.right * pickupRadius);
-            }
-            else
-            {
-                Gizmos.color = CanDrop() ? Color.green : Color.red;
-
-                Vector3 capsuleStart = pickedUpParent.position + dropOffset - Vector3.up * (dropHeight / 2);
-                Vector3 capsuleEnd = pickedUpParent.position + dropOffset + Vector3.up * (dropHeight / 2);
-
-                Gizmos.DrawWireSphere(capsuleStart, dropRadius);
-                Gizmos.DrawWireSphere(capsuleEnd, dropRadius);
-                Gizmos.DrawLine(capsuleStart + Vector3.forward * dropRadius, capsuleEnd + Vector3.forward * dropRadius);
-                Gizmos.DrawLine(capsuleStart - Vector3.forward * dropRadius, capsuleEnd - Vector3.forward * dropRadius);
-                Gizmos.DrawLine(capsuleStart + Vector3.right * dropRadius, capsuleEnd + Vector3.right * dropRadius);
-                Gizmos.DrawLine(capsuleStart - Vector3.right * dropRadius, capsuleEnd - Vector3.right * dropRadius);
-            }
+            UnhighlightObject(lastHighlightedObject.ObjectBeingHeld());
+            lastHighlightedObject = null;
+            lastHighlightedGameObject = null;
         }
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (!showGizmos) return;
 
+        if (!isHolding)
+        {
+            Gizmos.color = Color.green;
 
+            Gizmos.DrawWireSphere(pickupCapsuleStart, pickupRadius);
+            Gizmos.DrawWireSphere(pickupCapsuleEnd, pickupRadius);
+            Gizmos.DrawLine(pickupCapsuleStart + Vector3.forward * pickupRadius, pickupCapsuleEnd + Vector3.forward * pickupRadius);
+            Gizmos.DrawLine(pickupCapsuleStart - Vector3.forward * pickupRadius, pickupCapsuleEnd - Vector3.forward * pickupRadius);
+            Gizmos.DrawLine(pickupCapsuleStart + Vector3.right * pickupRadius, pickupCapsuleEnd + Vector3.right * pickupRadius);
+            Gizmos.DrawLine(pickupCapsuleStart - Vector3.right * pickupRadius, pickupCapsuleEnd - Vector3.right * pickupRadius);
+        }
+        else
+        {
+            Gizmos.color = CanDrop() ? Color.green : Color.red;
 
+            Gizmos.DrawWireSphere(dropCapsuleStart, dropRadius);
+            Gizmos.DrawWireSphere(dropCapsuleEnd, dropRadius);
+            Gizmos.DrawLine(dropCapsuleStart + Vector3.forward * dropRadius, dropCapsuleEnd + Vector3.forward * dropRadius);
+            Gizmos.DrawLine(dropCapsuleStart - Vector3.forward * dropRadius, dropCapsuleEnd - Vector3.forward * dropRadius);
+            Gizmos.DrawLine(dropCapsuleStart + Vector3.right * dropRadius, dropCapsuleEnd + Vector3.right * dropRadius);
+            Gizmos.DrawLine(dropCapsuleStart - Vector3.right * dropRadius, dropCapsuleEnd - Vector3.right * dropRadius);
+        }
+    }
 
 
 }
