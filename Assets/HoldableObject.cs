@@ -78,4 +78,8 @@ public class HoldableObject : MonoBehaviour, IHoldableObject
     {
         isPlaced = value;
     }
+    public IInteractable InteractableOfObject()
+    {
+        return GetComponent<IInteractable>();
+    }
 }

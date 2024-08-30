@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 24634040}
   - component: {fileID: 24634039}
   - component: {fileID: 24634038}
+  - component: {fileID: 24634043}
   - component: {fileID: 24634042}
   - component: {fileID: 24634037}
   - component: {fileID: 24634036}
@@ -397,6 +398,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whitenessFactor: 0.3
   highlighted: 0
+--- !u!114 &24634043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24634035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cf4b7a786215d34191f92072ddea673, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canInteract: 0
+  canOnlyInteractWhenPlaced: 1
 --- !u!1001 &67941672
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -459,11 +474,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7023349014442235081, guid: 0cbc082e07ecd6f4c9501c325f2ff343,
-        type: 3}
-      propertyPath: dropLayerMask.m_Bits
-      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8371724419517990842, guid: 0cbc082e07ecd6f4c9501c325f2ff343,
         type: 3}

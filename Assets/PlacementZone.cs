@@ -44,6 +44,13 @@ public class PlacementZone : MonoBehaviour
                     navAgent.enabled = false;
                 }
 
+                IInteractable interactable = holdableObject.InteractableOfObject();
+                if (interactable != null)
+                {
+                    if (interactable.IsOnlyInteractableWhenPlaced())
+                        interactable.SetInteractable(true);
+                }
+
                 holdableObject.SetIsPlaced(true);
                 ObjOnPlacementZone = holdableObject;
                 gobjOnPlacementZone = objOnPlacementZone.ObjectBeingHeld();
@@ -73,6 +80,13 @@ public class PlacementZone : MonoBehaviour
                 if (holdableNavAgent != null)
                 {
                     holdableNavAgent.enabled = true;
+                }
+
+                IInteractable interactable = holdableObject.InteractableOfObject();
+                if (interactable != null)
+                {
+                    if (interactable.IsOnlyInteractableWhenPlaced())
+                        interactable.SetInteractable(false);
                 }
 
                 holdableObject.SetIsPlaced(false);

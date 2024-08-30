@@ -155,6 +155,11 @@ public class AIAgent : MonoBehaviour, IHoldableObject
 
     public void SetIsPlaced(bool value)
     {
-       isPlaced = value;
+        isPlaced = value;
+    }
+
+    public IInteractable InteractableOfObject()
+    {
+        return GetComponent<IInteractable>();
     }
 }

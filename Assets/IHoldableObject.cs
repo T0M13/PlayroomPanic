@@ -11,6 +11,7 @@ public interface IHoldableObject
     public Rigidbody RigidbodyOfObject();
     public Collider ColliderOfObject();
     public NavMeshAgent NavMeshAgentOfObject();
+    public IInteractable InteractableOfObject();
     public bool ShouldFixate();
     public bool IsPlaced();
     public void SetIsPlaced(bool value);

@@ -304,6 +304,7 @@ MonoBehaviour:
   playerInput: {fileID: 7889897351039926184}
   playerRigidBody: {fileID: 1368425921684716102}
   playerCollider: {fileID: 4828836671801001455}
+  spawnedPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &7857761250000440278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,11 +348,17 @@ MonoBehaviour:
   dropOffset: {x: 0, y: 0, z: 0}
   dropLayerMask:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 200
   pickedUpParent: {fileID: 8406509864152281966}
-  gizmoColor: {r: 0, g: 1, b: 0.8264365, a: 1}
-  showGizmos: 1
+  currentHoldableGameObject: {fileID: 0}
+  lastHighlightedGameObject: {fileID: 0}
   isHolding: 0
+  pickupCapsuleStart: {x: 0, y: 0, z: 0}
+  pickupCapsuleEnd: {x: 0, y: 0, z: 0}
+  dropCapsuleStart: {x: 0, y: 0, z: 0}
+  dropCapsuleEnd: {x: 0, y: 0, z: 0}
+  gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  showGizmos: 1
 --- !u!114 &7889897351039926184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,7 +429,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7023349014442235081}
         m_TargetAssemblyTypeName: PlayerPickup, Assembly-CSharp
-        m_MethodName: OnInteract
+        m_MethodName: OnPickupDrop
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -486,6 +493,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 72a96c06-2790-4853-8676-fa921750509c
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7023349014442235081}
+        m_TargetAssemblyTypeName: PlayerPickup, Assembly-CSharp
+        m_MethodName: OnInteract
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f46fd0bf-f7de-4d64-a71e-8d3c26c3c2f4
+    m_ActionName: Player/Interact[/Keyboard/f]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

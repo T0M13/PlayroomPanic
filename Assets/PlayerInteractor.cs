@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class PlayerPickup : MonoBehaviour
+public class PlayerInteractor : MonoBehaviour
 {
     [Header("Pickup Capsule")]
     [SerializeField] private float pickupHeight = .7f;
@@ -278,7 +278,7 @@ public class PlayerPickup : MonoBehaviour
     }
 
 
-    public void OnInteract(InputAction.CallbackContext value)
+    public void OnPickupDrop(InputAction.CallbackContext value)
     {
         if (value.started)
         {
@@ -318,6 +318,36 @@ public class PlayerPickup : MonoBehaviour
             UnhighlightObject(lastHighlightedObject.ObjectBeingHeld());
             lastHighlightedObject = null;
             lastHighlightedGameObject = null;
+        }
+    }
+
+    private bool CanInteractWObject()
+    {
+        if (!isHolding && currentHoldableObject != null && currentHoldableObject.InteractableOfObject() != null)
+        {
+            if (currentHoldableObject.InteractableOfObject().IsInteractable())
+                return true;
+            else
+                return false;
+        }
+
+        return false;
+    }
+
+    private void InteractWObject()
+    {
+        if (!isHolding && currentHoldableObject != null)
+        {
+            currentHoldableObject.InteractableOfObject().Interact();
+        }
+    }
+
+    public void OnInteract(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            if (CanInteractWObject())
+                InteractWObject();
         }
     }
 
