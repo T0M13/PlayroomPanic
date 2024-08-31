@@ -1552,6 +1552,8 @@ MonoBehaviour:
     isWaitingForToilet: 0
     currentToilet: {fileID: 0}
     toiletUseTask: {fileID: 11400000, guid: c50013d0e94485d4a83894af7b54bf5b, type: 2}
+    needsDiaperChange: 0
+    onDiaperChanger: 0
   playfulness:
     value: 0.5
   spawnPoint: {x: 0, y: 0, z: 0}
@@ -1725,6 +1727,7 @@ GameObject:
   - component: {fileID: 1439126883}
   - component: {fileID: 1439126882}
   - component: {fileID: 1439126881}
+  - component: {fileID: 1439126889}
   - component: {fileID: 1439126888}
   - component: {fileID: 1439126887}
   m_Layer: 7
@@ -1753,7 +1756,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d9799432a9f0b7b45a62cd20323abf01, type: 2}
   - {fileID: 11400000, guid: 76c0f99efb858da45bcc6729affde447, type: 2}
   currentTask: {fileID: 0}
-  age: 3
+  age: 2
   energy:
     needType: 1
     initialValue: 100
@@ -1777,6 +1780,8 @@ MonoBehaviour:
     isWaitingForToilet: 0
     currentToilet: {fileID: 0}
     toiletUseTask: {fileID: 11400000, guid: c50013d0e94485d4a83894af7b54bf5b, type: 2}
+    needsDiaperChange: 0
+    onDiaperChanger: 0
   playfulness:
     value: 0.5
   spawnPoint: {x: 0, y: 0, z: 0}
@@ -1936,6 +1941,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whitenessFactor: 0.3
   highlighted: 0
+--- !u!114 &1439126889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439126880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2edd08160837432499b384e80036c3a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canInteract: 0
+  canOnlyInteractWhenPlaced: 1
+  ai: {fileID: 1439126881}
 --- !u!1 &1482222775
 GameObject:
   m_ObjectHideFlags: 0
@@ -2914,7 +2934,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1703342608}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34e84a72039f2fe449bb7308d2e94b58, type: 3}
+  m_Script: {fileID: 11500000, guid: 802d40715901d2643b6dff897b658775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   placementPoint: {fileID: 1703342609}

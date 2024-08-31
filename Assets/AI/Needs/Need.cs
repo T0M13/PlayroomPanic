@@ -5,7 +5,7 @@ namespace AI_Needs
     [System.Serializable]
     public class Need
     {
-        [SerializeField] private NeedType needType;
+        [SerializeField][ShowOnly] private NeedType needType;
         [Range(1, 100)] public float initialValue;
         [SerializeField][ShowOnly] private float currentValue;
         [SerializeField][Range(1, 100)] private float decayRate;
@@ -48,6 +48,16 @@ namespace AI_Needs
         public void Replenish(float replenishment)
         {
             CurrentValue = Mathf.Clamp(CurrentValue + replenishment, 0, 100);
+        }
+
+        public void ReplenishAll()
+        {
+            CurrentValue = 100;
+        }
+
+        public void DecreaseAll()
+        {
+            CurrentValue = 0;
         }
 
     }

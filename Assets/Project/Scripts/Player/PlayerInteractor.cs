@@ -22,7 +22,8 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField][ShowOnly] private IHoldableObject lastHighlightedObject;
     [SerializeField][ShowOnly] private GameObject lastHighlightedGameObject;
     [SerializeField][ShowOnly] private bool isHolding = false;
-
+    [SerializeField][ShowOnly] private bool isInteracting = false;
+    [SerializeField][ShowOnly] private float interactionHoldTime = 0f;
 
     [SerializeField][ShowOnly] private Vector3 pickupCapsuleStart, pickupCapsuleEnd;
     [SerializeField][ShowOnly] private Vector3 dropCapsuleStart, dropCapsuleEnd;
@@ -35,6 +36,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         UpdateCapsules();
         CheckForHoldable();
+        CheckInteraction();
         //CheckDropPlacementZone();
     }
 
@@ -334,11 +336,26 @@ public class PlayerInteractor : MonoBehaviour
         return false;
     }
 
-    private void InteractWObject()
+    private void CheckInteraction()
+    {
+        if (isInteracting && currentHoldableObject != null)
+        {
+            interactionHoldTime += Time.deltaTime;
+
+            if (interactionHoldTime >= currentHoldableObject.InteractableOfObject().InteractionThreshhold())
+            {
+                currentHoldableObject.InteractableOfObject().Interact();
+                OnStopInteract();
+            }
+        }
+    }
+
+    private void StartInteraction()
     {
         if (!isHolding && currentHoldableObject != null)
         {
-            currentHoldableObject.InteractableOfObject().Interact();
+            isInteracting = true;
+            interactionHoldTime = 0f;
         }
     }
 
@@ -347,8 +364,18 @@ public class PlayerInteractor : MonoBehaviour
         if (value.started)
         {
             if (CanInteractWObject())
-                InteractWObject();
+                StartInteraction();
         }
+        else if (value.canceled)
+        {
+            OnStopInteract();
+        }
+    }
+
+    private void OnStopInteract()
+    {
+        isInteracting = false;
+        interactionHoldTime = 0f;
     }
 
     private void OnDrawGizmosSelected()

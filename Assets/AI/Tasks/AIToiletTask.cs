@@ -22,7 +22,7 @@ public class AIToiletTask : AIBrain
                     ai.StartCoroutine(WaitAndRetryToilet(ai));
                 }
 
-                return; 
+                return;
             }
 
             MoveToToilet(ai);
@@ -32,12 +32,13 @@ public class AIToiletTask : AIBrain
                 UseToilet(ai);
             }
         }
-        else
+
+        if (!ai.toilet.NeedsDiaperChange && ai.Age < acceptableAge)
         {
-            // If AI is too young, stop and notify the player
             ai.NavMeshAgent.isStopped = true;
-            // Add logic to notify the player here if needed
+            ai.toilet.NeedsDiaperChange = true;
         }
+
     }
 
     private void MoveToToilet(AIAgent ai)
@@ -120,8 +121,11 @@ public class AIToiletTask : AIBrain
         }
     }
 
+
     public override void DrawGizmos(AIAgent ai)
     {
+        if (ai.Age < acceptableAge) return;
+
         if (ai.toilet.CurrentToilet != null)
         {
             Gizmos.color = Color.blue;
