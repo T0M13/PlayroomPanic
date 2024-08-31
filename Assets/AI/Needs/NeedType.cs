@@ -5,6 +5,9 @@ namespace AI_Needs
         Hunger,
         Energy,
         Fun,
-        Hygiene
+        Hygiene,
+        Toilet,
+        Social,
+
     }
 }

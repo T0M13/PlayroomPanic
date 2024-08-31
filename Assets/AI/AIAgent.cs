@@ -13,10 +13,12 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     [SerializeField] private Rigidbody aiBody;
     [Header("Tasks")]
     public List<AIBrain> availableTasks = new List<AIBrain>();
-    [SerializeField][ShowOnly] private AIBrain currentTask;
-
+    [SerializeField] private AIBrain currentTask;
+    [Header("Status")]
+    [SerializeField][Range(1, 6)] private int age = 3;
     [Header("Needs")]
     public Energy energy = new Energy();
+    public ToiletNeed toilet = new ToiletNeed();
 
     [Header("Personality Traits")]
     [Tooltip("Increases the likelihood of engaging in playful activities, such as running around, playing with toys, or interacting with other children.")]
@@ -34,6 +36,36 @@ public class AIAgent : MonoBehaviour, IHoldableObject
 
     public NavMeshAgent NavMeshAgent { get => navMeshAgent; set => navMeshAgent = value; }
     public AIBrain CurrentTask { get => currentTask; set => currentTask = value; }
+    public int Age { get => age; set => age = value; }
+
+    private void OnEnable()
+    {
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.onTimeOfDayChange += UpdateNeedsOnTimeOfDayChange;
+            GameManager.Instance.onHourIncrement += UpdateNeedsOnTheHour;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.onTimeOfDayChange -= UpdateNeedsOnTimeOfDayChange;
+            GameManager.Instance.onHourIncrement -= UpdateNeedsOnTheHour;
+
+        }
+    }
+
+    private void UpdateNeedsOnTimeOfDayChange()
+    {
+
+    }
+
+    private void UpdateNeedsOnTheHour()
+    {
+        toilet.TryDecrease(this);
+    }
 
     private void OnValidate()
     {
@@ -49,6 +81,7 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     {
         SetSpawnPoint(transform.position);
     }
+
 
     private void GetReferences()
     {
@@ -84,6 +117,11 @@ public class AIAgent : MonoBehaviour, IHoldableObject
         {
             currentTask.DrawGizmos(this);
         }
+    }
+
+    public void SetUrgentTask(AIBrain task)
+    {
+        currentTask = task;
     }
 
     private AIBrain ChooseBestTask()

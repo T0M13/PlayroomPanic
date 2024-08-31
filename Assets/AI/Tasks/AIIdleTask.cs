@@ -32,7 +32,7 @@ public class AIIdleTask : AIBrain
 
         if (ai.energy != null)
         {
-            ai.energy.Decrease(energyDecreaseMutliplier);  
+            ai.energy.DecreaseByTime(energyDecreaseMutliplier);  
 
             if (ai.energy.CurrentValue <= ai.energy.TiredThreshold)
             {

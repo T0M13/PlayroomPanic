@@ -11,7 +11,7 @@ public class AIRestTask : AIBrain
 
         if (ai.energy != null)
         {
-            ai.energy.Replenish(energyReplenishMutliplier);
+            ai.energy.ReplenishByTime(energyReplenishMutliplier);
             if (ai.energy.CurrentValue >= ai.energy.ActiveThreshold)
             {
                 ai.NavMeshAgent.isStopped = false;
