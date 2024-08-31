@@ -30,10 +30,12 @@ namespace AI_Needs
 
         public ToiletNeed() : base(NeedType.Toilet, 100f, 2f, 2f) { }
 
+
         public void TryDecrease(AIAgent ai)
         {
             if (ai.energy.IsResting) return;
             if (IsUsingToilet) return;
+            if (onDiaperChanger) return;
 
             if (Random.value < DecreaseChance)
             {
@@ -55,6 +57,7 @@ namespace AI_Needs
             if (needsDiaperChange && onDiaperChanger)
             {
                 ReplenishAll();
+                needsDiaperChange = false;
             }
         }
     }

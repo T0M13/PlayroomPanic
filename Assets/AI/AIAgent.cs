@@ -40,21 +40,34 @@ public class AIAgent : MonoBehaviour, IHoldableObject
 
     private void OnEnable()
     {
-        if (GameManager.Instance)
+        GameManager gameManager = null;
+        if (gameManager == null)
         {
-            GameManager.Instance.onTimeOfDayChange += UpdateNeedsOnTimeOfDayChange;
-            GameManager.Instance.onHourIncrement += UpdateNeedsOnTheHour;
+            gameManager = FindAnyObjectByType<GameManager>();
         }
+
+        if (gameManager != null)
+        {
+            gameManager.onTimeOfDayChange += UpdateNeedsOnTimeOfDayChange;
+            gameManager.onHourIncrement += UpdateNeedsOnTheHour;
+        }
+
     }
 
     private void OnDisable()
     {
-        if (GameManager.Instance)
+        GameManager gameManager = null;
+        if (gameManager == null)
         {
-            GameManager.Instance.onTimeOfDayChange -= UpdateNeedsOnTimeOfDayChange;
-            GameManager.Instance.onHourIncrement -= UpdateNeedsOnTheHour;
-
+            gameManager = FindAnyObjectByType<GameManager>();
         }
+
+        if (gameManager != null)
+        {
+            gameManager.onTimeOfDayChange -= UpdateNeedsOnTimeOfDayChange;
+            gameManager.onHourIncrement -= UpdateNeedsOnTheHour;
+        }
+
     }
 
     private void UpdateNeedsOnTimeOfDayChange()
