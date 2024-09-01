@@ -11,6 +11,7 @@ public class PlayerReferences : MonoBehaviour
     [Header("References")]
     [ShowOnly][SerializeField] private PlayerMovement playerMovement;
     [ShowOnly][SerializeField] private PlayerInput playerInput;
+    [ShowOnly][SerializeField] private PlayerUI playerUI;
     [Header("References Plus")]
     [SerializeField] private Rigidbody playerRigidBody;
     [SerializeField] private CapsuleCollider playerCollider;
@@ -21,6 +22,7 @@ public class PlayerReferences : MonoBehaviour
     public Rigidbody PlayerRigidBody { get => playerRigidBody; set => playerRigidBody = value; }
     public CapsuleCollider PlayerCollider { get => playerCollider; set => playerCollider = value; }
     public PlayerInput PlayerInput { get => playerInput; set => playerInput = value; }
+    public PlayerUI PlayerUI { get => playerUI; set => playerUI = value; }
 
     private void Awake()
     {
@@ -84,6 +86,18 @@ public class PlayerReferences : MonoBehaviour
             catch
             {
                 Debug.LogWarning("CapsuleCollider Missing!");
+            }
+        }
+
+        if (PlayerUI == null)
+        {
+            try
+            {
+                PlayerUI = GetComponentInChildren<PlayerUI>();
+            }
+            catch
+            {
+                Debug.LogWarning("PlayerUI Missing!");
             }
         }
 

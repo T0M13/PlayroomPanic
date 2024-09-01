@@ -314,6 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rbody: {fileID: 24634036}
   objCollider: {fileID: 24634037}
+  placementCategory: 0
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
   isPickedUp: 0
@@ -412,6 +413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canInteract: 0
   canOnlyInteractWhenPlaced: 1
+  canOnlyInteractWhenNeeded: 1
   hasInteracted: 0
   oneTimeInteraction: 0
   interactionHoldTime: 3
@@ -423,6 +425,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 426917449125555170, guid: 0cbc082e07ecd6f4c9501c325f2ff343,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 426917449125555170, guid: 0cbc082e07ecd6f4c9501c325f2ff343,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3248861566858397397, guid: 0cbc082e07ecd6f4c9501c325f2ff343,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
     - target: {fileID: 3582059613910284146, guid: 0cbc082e07ecd6f4c9501c325f2ff343,
         type: 3}
       propertyPath: GlobalObjectIdHash
@@ -1032,6 +1049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34e84a72039f2fe449bb7308d2e94b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  acceptedCategories: 00000000
   placementPoint: {fileID: 596989662}
   gobjOnPlacementZone: {fileID: 0}
   isOccupied: 0
@@ -1746,6 +1764,7 @@ MonoBehaviour:
     decreaseChance: 0.6
     decreaseAmount: 7.5
     toiletUseTask: {fileID: 11400000, guid: c50013d0e94485d4a83894af7b54bf5b, type: 2}
+    acceptableAgeForToilet: 3
     isUsingToilet: 0
     isWaitingForToilet: 0
     currentToilet: {fileID: 0}
@@ -1753,6 +1772,7 @@ MonoBehaviour:
     onDiaperChanger: 0
   playfulness:
     value: 0.5
+  placementCategory: 1
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
   isPickedUp: 0
@@ -1974,6 +1994,7 @@ MonoBehaviour:
     decreaseChance: 0.6
     decreaseAmount: 7.5
     toiletUseTask: {fileID: 11400000, guid: c50013d0e94485d4a83894af7b54bf5b, type: 2}
+    acceptableAgeForToilet: 3
     isUsingToilet: 0
     isWaitingForToilet: 0
     currentToilet: {fileID: 0}
@@ -1981,6 +2002,7 @@ MonoBehaviour:
     onDiaperChanger: 0
   playfulness:
     value: 0.5
+  placementCategory: 1
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
   isPickedUp: 0
@@ -2152,6 +2174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canInteract: 0
   canOnlyInteractWhenPlaced: 1
+  canOnlyInteractWhenNeeded: 1
   hasInteracted: 0
   oneTimeInteraction: 0
   interactionHoldTime: 3
@@ -2169,6 +2192,7 @@ GameObject:
   - component: {fileID: 1482222780}
   - component: {fileID: 1482222779}
   - component: {fileID: 1482222778}
+  - component: {fileID: 1482222783}
   - component: {fileID: 1482222777}
   - component: {fileID: 1482222776}
   m_Layer: 7
@@ -2254,6 +2278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rbody: {fileID: 1482222776}
   objCollider: {fileID: 1482222777}
+  placementCategory: 0
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
   isPickedUp: 0
@@ -2324,6 +2349,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1482222783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482222775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cf4b7a786215d34191f92072ddea673, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canInteract: 1
+  canOnlyInteractWhenPlaced: 0
+  canOnlyInteractWhenNeeded: 0
+  hasInteracted: 0
+  oneTimeInteraction: 0
+  interactionHoldTime: 1
 --- !u!1 &1487525433
 GameObject:
   m_ObjectHideFlags: 0
@@ -2617,6 +2660,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -13.999939
       objectReference: {fileID: 0}
+    - target: {fileID: 4845117381334645001, guid: 2da3dcc22749e7f4280737786d898334,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 4845161671150009267, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2780,7 +2828,7 @@ PrefabInstance:
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
@@ -2820,12 +2868,12 @@ PrefabInstance:
     - target: {fileID: 4845659738863557451, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1295.814
+      value: 996.208
       objectReference: {fileID: 0}
     - target: {fileID: 4845659738863557451, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 275.46118
+      value: 131.6503
       objectReference: {fileID: 0}
     - target: {fileID: 4845659738863557451, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
@@ -3137,6 +3185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 802d40715901d2643b6dff897b658775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  acceptedCategories: 01000000
   placementPoint: {fileID: 1703342609}
   gobjOnPlacementZone: {fileID: 0}
   isOccupied: 0

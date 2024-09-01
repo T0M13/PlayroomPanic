@@ -7,6 +7,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [Header("Settings")]
     [SerializeField] private bool canInteract = true;
     [SerializeField] private bool canOnlyInteractWhenPlaced = false;
+    [SerializeField] private bool canOnlyInteractWhenNeeded = false;
     [SerializeField] private bool hasInteracted = false;
     [SerializeField] private bool oneTimeInteraction = false;
     [SerializeField] private float interactionHoldTime = 3f;
@@ -32,6 +33,11 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public bool IsInteractable()
     {
         return canInteract;
+    }
+
+    public virtual bool IsOnlyInteractableWhenNeeded()
+    {
+        return canOnlyInteractWhenNeeded;
     }
 
     public bool IsOnlyInteractableWhenPlaced()

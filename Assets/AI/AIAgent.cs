@@ -25,6 +25,7 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     public Playfulness playfulness = new Playfulness();
 
     [Header("Settings")]
+    [SerializeField] private PlacementCategory placementCategory;
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private Vector3 spawnPointOffset;
     [SerializeField][ShowOnly] private bool isPickedUp = false;
@@ -212,5 +213,10 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     public IInteractable InteractableOfObject()
     {
         return GetComponent<IInteractable>();
+    }
+
+    public PlacementCategory GetPlacementCategory()
+    {
+        return placementCategory;
     }
 }

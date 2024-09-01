@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Playables;
 
 public class PlacementZone : MonoBehaviour
 {
     [Header("Placement Settings")]
+    [SerializeField] private PlacementCategory[] acceptedCategories;
     [SerializeField] private Transform placementPoint;
     [SerializeField] private IHoldableObject objOnPlacementZone = null;
     [SerializeField][ShowOnly] private GameObject gobjOnPlacementZone = null;
@@ -43,12 +45,7 @@ public class PlacementZone : MonoBehaviour
             navAgent.enabled = false;
         }
 
-        IInteractable interactable = holdableObject.InteractableOfObject();
-        if (interactable != null)
-        {
-            if (interactable.IsOnlyInteractableWhenPlaced())
-                interactable.SetInteractable(true);
-        }
+        InteractionSetOnPlaced(holdableObject, true);
 
         holdableObject.SetIsPlaced(true);
         ObjOnPlacementZone = holdableObject;
@@ -76,18 +73,47 @@ public class PlacementZone : MonoBehaviour
             holdableNavAgent.enabled = true;
         }
 
-        IInteractable interactable = holdableObject.InteractableOfObject();
-        if (interactable != null)
-        {
-            if (interactable.IsOnlyInteractableWhenPlaced())
-                interactable.SetInteractable(false);
-        }
+        InteractionSetOnRemoved(holdableObject, false);
 
         holdableObject.SetIsPlaced(false);
         ObjOnPlacementZone = null;
         gobjOnPlacementZone = null;
         IsOccupied = false;
 
+    }
+
+    public virtual void InteractionSetOnPlaced(IHoldableObject holdableObject, bool value)
+    {
+        IInteractable interactable = holdableObject.InteractableOfObject();
+
+        if (interactable != null)
+        {
+            if (interactable.IsOnlyInteractableWhenPlaced() && interactable.IsOnlyInteractableWhenNeeded())
+                interactable.SetInteractable(value);
+        }
+    }
+
+    public virtual void InteractionSetOnRemoved(IHoldableObject holdableObject, bool value)
+    {
+        IInteractable interactable = holdableObject.InteractableOfObject();
+
+        if (interactable != null)
+        {
+            if (interactable.IsOnlyInteractableWhenPlaced() && interactable.IsOnlyInteractableWhenNeeded() || interactable.IsOnlyInteractableWhenPlaced() && !interactable.IsOnlyInteractableWhenNeeded())
+                interactable.SetInteractable(value);
+        }
+    }
+
+    public bool CanPlaceObject(IHoldableObject holdable)
+    {
+        foreach (var category in acceptedCategories)
+        {
+            if (holdable.GetPlacementCategory() == category)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

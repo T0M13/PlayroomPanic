@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DiaperChanger : PlacementZone
 {
+
     public override void PlaceObject(IHoldableObject holdableObject)
     {
         if (!holdableObject.ObjectBeingHeld().GetComponent<AIAgent>()) return;

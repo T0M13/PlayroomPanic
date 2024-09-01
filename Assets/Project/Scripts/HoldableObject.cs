@@ -7,10 +7,11 @@ public class HoldableObject : MonoBehaviour, IHoldableObject
     [SerializeField] private Rigidbody rbody;
     [SerializeField] private Collider objCollider;
     [Header("Settings")]
+    [SerializeField] private PlacementCategory placementCategory;
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private Vector3 spawnPointOffset;
-    [SerializeField] [ShowOnly] private bool isPickedUp = false;
-    [SerializeField] [ShowOnly] private bool shouldFixate = true;
+    [SerializeField][ShowOnly] private bool isPickedUp = false;
+    [SerializeField][ShowOnly] private bool shouldFixate = true;
     [SerializeField][ShowOnly] private bool isPlaced = false;
 
 
@@ -32,7 +33,7 @@ public class HoldableObject : MonoBehaviour, IHoldableObject
 
     public NavMeshAgent NavMeshAgentOfObject()
     {
-       return null;
+        return null;
     }
 
     public GameObject ObjectBeingHeld()
@@ -52,7 +53,7 @@ public class HoldableObject : MonoBehaviour, IHoldableObject
 
     public Collider ColliderOfObject()
     {
-       return objCollider;
+        return objCollider;
     }
 
     public void SetSpawnPoint(Vector3 position)
@@ -72,7 +73,7 @@ public class HoldableObject : MonoBehaviour, IHoldableObject
 
     public bool IsPlaced()
     {
-       return isPlaced;
+        return isPlaced;
     }
     public void SetIsPlaced(bool value)
     {
@@ -81,5 +82,10 @@ public class HoldableObject : MonoBehaviour, IHoldableObject
     public IInteractable InteractableOfObject()
     {
         return GetComponent<IInteractable>();
+    }
+
+    public PlacementCategory GetPlacementCategory()
+    {
+        return placementCategory;
     }
 }

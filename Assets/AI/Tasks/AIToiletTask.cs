@@ -6,12 +6,11 @@ public class AIToiletTask : AIBrain
 {
     [Header("Task Settings")]
     [SerializeField] private float acceptableDistance = 1.5f;
-    [SerializeField] private int acceptableAge = 3;
     [SerializeField] private float waitForToiletSeconds = 3f;
 
     public override void DoAction(AIAgent ai)
     {
-        if (ai.Age >= acceptableAge)
+        if (ai.Age >= ai.toilet.AcceptableAgeForToilet)
         {
             if (ai.toilet.CurrentToilet == null || ai.toilet.CurrentToilet.IsOccupied && ai.toilet.CurrentToilet.CurrentAI != ai)
             {
@@ -33,7 +32,7 @@ public class AIToiletTask : AIBrain
             }
         }
 
-        if (!ai.toilet.NeedsDiaperChange && ai.Age < acceptableAge)
+        if (!ai.toilet.NeedsDiaperChange && ai.Age < ai.toilet.AcceptableAgeForToilet)
         {
             ai.NavMeshAgent.isStopped = true;
             ai.toilet.NeedsDiaperChange = true;
@@ -124,7 +123,7 @@ public class AIToiletTask : AIBrain
 
     public override void DrawGizmos(AIAgent ai)
     {
-        if (ai.Age < acceptableAge) return;
+        if (ai.Age < ai.toilet.AcceptableAgeForToilet) return;
 
         if (ai.toilet.CurrentToilet != null)
         {

@@ -28,9 +28,12 @@ public class AIInteractor : InteractableObject
     {
         base.Interact();
 
-        if (ai.toilet.OnDiaperChanger && ai.toilet.NeedsDiaperChange)
-        {
-            ai.toilet.DoDiaperChange();
-        }
+        ai.toilet.DoDiaperChange();
+    }
+
+    public override bool IsOnlyInteractableWhenNeeded()
+    {
+        
+        return ai.toilet.NeedsDiaperChange; /*Add with "||" more when needed*/
     }
 }

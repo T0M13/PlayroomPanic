@@ -12,6 +12,7 @@ namespace AI_Needs
         [SerializeField][Range(0f, 1f)] private float decreaseChance = 0.55f;
         [SerializeField][Range(1f, 100f)] private float decreaseAmount = 7.5f;
         [SerializeField] private AIBrain toiletUseTask;
+        [SerializeField][ShowOnly] private int acceptableAgeForToilet = 3;
         [Header("Above Age for Toilet Usage")]
         [SerializeField][ShowOnly] private bool isUsingToilet = false;
         [SerializeField][ShowOnly] private bool isWaitingForToilet = false;
@@ -27,6 +28,7 @@ namespace AI_Needs
         public bool IsWaitingForToilet { get => isWaitingForToilet; set => isWaitingForToilet = value; }
         public bool NeedsDiaperChange { get => needsDiaperChange; set => needsDiaperChange = value; }
         public bool OnDiaperChanger { get => onDiaperChanger; set => onDiaperChanger = value; }
+        public int AcceptableAgeForToilet { get => acceptableAgeForToilet; set => acceptableAgeForToilet = value; }
 
         public ToiletNeed() : base(NeedType.Toilet, 100f, 2f, 2f) { }
 
@@ -35,7 +37,7 @@ namespace AI_Needs
         {
             if (ai.energy.IsResting) return;
             if (IsUsingToilet) return;
-            if (onDiaperChanger) return;
+            if (onDiaperChanger && ai.Age < AcceptableAgeForToilet) return;
 
             if (Random.value < DecreaseChance)
             {

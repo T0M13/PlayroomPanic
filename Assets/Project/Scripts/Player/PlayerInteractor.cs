@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerInteractor : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private PlayerReferences playerReferences;
+
+
     [Header("Pickup Capsule")]
     [SerializeField] private float pickupHeight = .7f;
     [SerializeField] private float pickupRadius = 1.5f;
@@ -31,6 +35,18 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private Color gizmoColor = Color.red;
     [SerializeField] private bool showGizmos = true;
 
+    private void Awake()
+    {
+        GetReferences();
+    }
+
+    private void GetReferences()
+    {
+        if (playerReferences == null)
+        {
+            playerReferences = GetComponent<PlayerReferences>();
+        }
+    }
 
     private void Update()
     {
@@ -192,10 +208,7 @@ public class PlayerInteractor : MonoBehaviour
             if (currentHoldableObject.RigidbodyOfObject() != null)
                 currentHoldableObject.RigidbodyOfObject().isKinematic = false;
 
-            //if (CheckDropPlacementZone())
-            //{
-            DropPlacementZone(currentHoldableObject);
-            //}
+            CheckDropPlacementZone(currentHoldableObject);
 
             currentHoldableObject = null;
             currentHoldableGameObject = null;
@@ -221,42 +234,20 @@ public class PlayerInteractor : MonoBehaviour
                 if (((1 << collider.gameObject.layer) & dropLayerMask) == 0)
                     return false;
             }
+
         }
 
         return true;
     }
 
-    //private bool CheckDropPlacementZone()
-    //{
-    //    if (!isHolding)
-    //        return false;
-
-    //    Collider[] colliders = Physics.OverlapCapsule(dropCapsuleStart, dropCapsuleEnd, dropRadius);
-    //    PlacementZone placementZone = null;
-    //    foreach (Collider collider in colliders)
-    //    {
-    //        placementZone = collider.GetComponent<PlacementZone>();
-    //        if (placementZone != null)
-    //        {
-    //            if (placementZone.GetComponent<HighlightObject>())
-    //            {
-    //                HighlightObject(placementZone.gameObject);
-    //            }
-    //            return true;
-    //        }
-    //    }
-
-    //    return false;
-    //}
-
-    private void DropPlacementZone(IHoldableObject holdableObject)
+    private void CheckDropPlacementZone(IHoldableObject holdableObject)
     {
         Collider[] colliders = Physics.OverlapCapsule(dropCapsuleStart, dropCapsuleEnd, dropRadius);
 
         foreach (Collider collider in colliders)
         {
             PlacementZone placementZone = collider.GetComponent<PlacementZone>();
-            if (placementZone != null && !placementZone.IsOccupied && placementZone.ObjOnPlacementZone == null)
+            if (placementZone != null && !placementZone.IsOccupied && placementZone.ObjOnPlacementZone == null && placementZone.CanPlaceObject(holdableObject))
             {
                 placementZone.PlaceObject(holdableObject);
                 break;
@@ -340,6 +331,10 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (isInteracting && currentHoldableObject != null)
         {
+            playerReferences.PlayerUI.SetSliderMaxValue(currentHoldableObject.InteractableOfObject().InteractionThreshhold());
+
+            playerReferences.PlayerUI.UpdateSliderValue(interactionHoldTime);
+
             interactionHoldTime += Time.deltaTime;
 
             if (interactionHoldTime >= currentHoldableObject.InteractableOfObject().InteractionThreshhold())
@@ -347,6 +342,11 @@ public class PlayerInteractor : MonoBehaviour
                 currentHoldableObject.InteractableOfObject().Interact();
                 OnStopInteract();
             }
+        }
+
+        if (isInteracting && currentHoldableObject == null)
+        {
+            OnStopInteract();
         }
     }
 
@@ -376,6 +376,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         isInteracting = false;
         interactionHoldTime = 0f;
+        playerReferences.PlayerUI.DeactivateSlider();
     }
 
     private void OnDrawGizmosSelected()

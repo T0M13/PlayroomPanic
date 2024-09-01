@@ -15,6 +15,7 @@ public interface IHoldableObject
     public bool ShouldFixate();
     public bool IsPlaced();
     public void SetIsPlaced(bool value);
+    public PlacementCategory GetPlacementCategory();
 
 }
 
