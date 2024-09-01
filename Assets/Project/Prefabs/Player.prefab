@@ -924,10 +924,9 @@ MonoBehaviour:
   isSprinting: 0
   isMoving: 0
   lastMoveDirection: {x: 0, y: 0, z: 0}
-  gizmoColor: {r: 0.12259703, g: 0.8106604, b: 0.8962264, a: 1}
+  showGizmos: 0
   gizmoLineLength: 2
   gizmoSphereRadius: 0.1
-  showGizmos: 1
 --- !u!114 &7023349014442235081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -960,7 +959,6 @@ MonoBehaviour:
   pickupCapsuleEnd: {x: 0, y: 0, z: 0}
   dropCapsuleStart: {x: 0, y: 0, z: 0}
   dropCapsuleEnd: {x: 0, y: 0, z: 0}
-  gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   showGizmos: 1
 --- !u!114 &7889897351039926184
 MonoBehaviour:

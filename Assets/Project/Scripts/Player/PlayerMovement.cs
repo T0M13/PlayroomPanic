@@ -22,10 +22,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][ShowOnly] private Vector3 lastMoveDirection;
 
     [Header("Gizmo Settings")]
-    [SerializeField] private Color gizmoColor = Color.red;
+    [SerializeField] private bool showGizmos = true;
     [SerializeField] private float gizmoLineLength = 2f;
     [SerializeField] private float gizmoSphereRadius = 0.1f;
-    [SerializeField] private bool showGizmos = true;
 
     private void Awake()
     {
@@ -96,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (showGizmos && moveComponent != null)
         {
-            Gizmos.color = gizmoColor;
+            Gizmos.color = Color.blue;
             if (Application.isPlaying)
             {
                 Gizmos.DrawLine(transform.position, transform.position + lastMoveDirection * gizmoLineLength);

@@ -32,7 +32,6 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField][ShowOnly] private Vector3 pickupCapsuleStart, pickupCapsuleEnd;
     [SerializeField][ShowOnly] private Vector3 dropCapsuleStart, dropCapsuleEnd;
     [Header("Gizmos")]
-    [SerializeField] private Color gizmoColor = Color.red;
     [SerializeField] private bool showGizmos = true;
 
     private void Awake()
@@ -198,7 +197,7 @@ public class PlayerInteractor : MonoBehaviour
     /// </summary>
     private void Drop()
     {
-        if (currentHoldableObject != null && CanDrop())
+        if (currentHoldableObject != null && CanDrop(out PlacementZone placementZone))
         {
             currentHoldableObject.SetIsBeingHeld(false);
             currentHoldableObject.ObjectBeingHeld().transform.SetParent(null);
@@ -208,7 +207,7 @@ public class PlayerInteractor : MonoBehaviour
             if (currentHoldableObject.RigidbodyOfObject() != null)
                 currentHoldableObject.RigidbodyOfObject().isKinematic = false;
 
-            CheckDropPlacementZone(currentHoldableObject);
+            placementZone?.PlaceObject(currentHoldableObject);
 
             currentHoldableObject = null;
             currentHoldableGameObject = null;
@@ -217,11 +216,13 @@ public class PlayerInteractor : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a bool if the curentobject held can be dropped
+    /// Returns a bool if the current object held can be dropped and finds a suitable placement zone.
     /// </summary>
-    /// <returns></returns>
-    private bool CanDrop()
+    /// <returns>True if the object can be dropped; otherwise, false.</returns>
+    private bool CanDrop(out PlacementZone suitablePlacementZone)
     {
+        suitablePlacementZone = null;
+
         if (currentHoldableObject == null)
             return false;
 
@@ -229,10 +230,19 @@ public class PlayerInteractor : MonoBehaviour
 
         foreach (Collider collider in colliders)
         {
-            if (collider != currentHoldableObject.ColliderOfObject())
+            if (collider.GetComponent<PlacementZone>())
             {
-                if (((1 << collider.gameObject.layer) & dropLayerMask) == 0)
-                    return false;
+                PlacementZone placementZone = collider.GetComponent<PlacementZone>();
+                if (placementZone != null && !placementZone.IsOccupied && placementZone.ObjOnPlacementZone == null && placementZone.CanPlaceObject(currentHoldableObject))
+                {
+                    suitablePlacementZone = placementZone;
+                    return true;
+                }
+            }
+
+            if (collider != currentHoldableObject.ColliderOfObject() && ((1 << collider.gameObject.layer) & dropLayerMask) == 0)
+            {
+                return false;
             }
 
         }
@@ -240,20 +250,7 @@ public class PlayerInteractor : MonoBehaviour
         return true;
     }
 
-    private void CheckDropPlacementZone(IHoldableObject holdableObject)
-    {
-        Collider[] colliders = Physics.OverlapCapsule(dropCapsuleStart, dropCapsuleEnd, dropRadius);
 
-        foreach (Collider collider in colliders)
-        {
-            PlacementZone placementZone = collider.GetComponent<PlacementZone>();
-            if (placementZone != null && !placementZone.IsOccupied && placementZone.ObjOnPlacementZone == null && placementZone.CanPlaceObject(holdableObject))
-            {
-                placementZone.PlaceObject(holdableObject);
-                break;
-            }
-        }
-    }
 
     private void CheckPickUpPlacementZone(IHoldableObject holdableObject)
     {
@@ -396,7 +393,7 @@ public class PlayerInteractor : MonoBehaviour
         }
         else
         {
-            Gizmos.color = CanDrop() ? Color.green : Color.red;
+            Gizmos.color = CanDrop(out _) ? Color.green : Color.red;
 
             Gizmos.DrawWireSphere(dropCapsuleStart, dropRadius);
             Gizmos.DrawWireSphere(dropCapsuleEnd, dropRadius);
