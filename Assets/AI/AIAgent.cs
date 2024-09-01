@@ -20,9 +20,9 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     public Energy energy = new Energy();
     public ToiletNeed toilet = new ToiletNeed();
 
-    [Header("Personality Traits")]
-    [Tooltip("Increases the likelihood of engaging in playful activities, such as running around, playing with toys, or interacting with other children.")]
-    public Playfulness playfulness = new Playfulness();
+    //[Header("Personality Traits")]
+    //[Tooltip("Increases the likelihood of engaging in playful activities, such as running around, playing with toys, or interacting with other children.")]
+    //public Playfulness playfulness = new Playfulness();
 
     [Header("Settings")]
     [SerializeField] private PlacementCategory placementCategory;

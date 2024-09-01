@@ -23,7 +23,6 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private Transform pickedUpParent = null;
     [SerializeField][ShowOnly] IHoldableObject currentHoldableObject;
     [SerializeField][ShowOnly] GameObject currentHoldableGameObject;
-    [SerializeField][ShowOnly] private IHoldableObject lastHighlightedObject;
     [SerializeField][ShowOnly] private GameObject lastHighlightedGameObject;
     [SerializeField][ShowOnly] private bool isHolding = false;
     [SerializeField][ShowOnly] private bool isInteracting = false;
@@ -52,7 +51,26 @@ public class PlayerInteractor : MonoBehaviour
         UpdateCapsules();
         CheckForHoldable();
         CheckInteraction();
-        //CheckDropPlacementZone();
+        //if (isHolding)
+        //{
+        //    if (CanDrop(out PlacementZone suitablePlacementzone))
+        //    {
+        //        if (!suitablePlacementzone) return;
+
+        //        if (lastHighlightedGameObject != suitablePlacementzone.gameObject)
+        //        {
+        //            UnhighlightObject(lastHighlightedGameObject);
+        //            HighlightObject(suitablePlacementzone.gameObject);
+        //            lastHighlightedGameObject = suitablePlacementzone.gameObject;
+        //        }
+        //        else
+        //        {
+        //            UnhighlightObject(lastHighlightedGameObject);
+        //            HighlightObject(suitablePlacementzone.gameObject);
+        //            lastHighlightedGameObject = suitablePlacementzone.gameObject;
+        //        }
+        //    }
+        //}
     }
 
     /// <summary>
@@ -105,24 +123,22 @@ public class PlayerInteractor : MonoBehaviour
 
         if (currentHoldableObject != null)
         {
-            if (lastHighlightedObject != currentHoldableObject)
+            if (lastHighlightedGameObject != currentHoldableGameObject)
             {
-                UnhighlightLastObject();
-                HighlightObject(currentHoldableObject.ObjectBeingHeld());
-                lastHighlightedObject = currentHoldableObject;
+                UnhighlightObject(lastHighlightedGameObject);
+                HighlightObject(currentHoldableGameObject);
                 lastHighlightedGameObject = currentHoldableGameObject;
             }
             else
             {
-                UnhighlightLastObject();
-                HighlightObject(currentHoldableObject.ObjectBeingHeld());
-                lastHighlightedObject = currentHoldableObject;
+                UnhighlightObject(lastHighlightedGameObject);
+                HighlightObject(currentHoldableGameObject);
                 lastHighlightedGameObject = currentHoldableGameObject;
             }
         }
         else
         {
-            UnhighlightLastObject();
+            UnhighlightObject(lastHighlightedGameObject);
         }
     }
 
@@ -152,7 +168,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (currentHoldableObject != null && CanPickUp())
         {
-            UnhighlightObject(currentHoldableObject.ObjectBeingHeld());
+            UnhighlightObject(lastHighlightedGameObject);
 
             CheckPickUpPlacementZone(currentHoldableObject);
 
@@ -199,6 +215,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (currentHoldableObject != null && CanDrop(out PlacementZone placementZone))
         {
+
             currentHoldableObject.SetIsBeingHeld(false);
             currentHoldableObject.ObjectBeingHeld().transform.SetParent(null);
 
@@ -208,6 +225,8 @@ public class PlayerInteractor : MonoBehaviour
                 currentHoldableObject.RigidbodyOfObject().isKinematic = false;
 
             placementZone?.PlaceObject(currentHoldableObject);
+
+            UnhighlightObject(lastHighlightedGameObject);
 
             currentHoldableObject = null;
             currentHoldableGameObject = null;
@@ -285,6 +304,8 @@ public class PlayerInteractor : MonoBehaviour
 
     private void HighlightObject(GameObject highlightobject)
     {
+        if (highlightobject == null) return;
+
         var highlightScript = highlightobject.GetComponent<HighlightObject>();
         if (highlightScript != null)
         {
@@ -294,6 +315,8 @@ public class PlayerInteractor : MonoBehaviour
 
     private void UnhighlightObject(GameObject highlightobject)
     {
+        if (highlightobject == null) return;
+
         var highlightScript = highlightobject.GetComponent<HighlightObject>();
         if (highlightScript != null)
         {
@@ -301,15 +324,6 @@ public class PlayerInteractor : MonoBehaviour
         }
     }
 
-    private void UnhighlightLastObject()
-    {
-        if (lastHighlightedObject != null)
-        {
-            UnhighlightObject(lastHighlightedObject.ObjectBeingHeld());
-            lastHighlightedObject = null;
-            lastHighlightedGameObject = null;
-        }
-    }
 
     private bool CanInteractWObject()
     {

@@ -10,6 +10,7 @@ public class AIToiletTask : AIBrain
 
     public override void DoAction(AIAgent ai)
     {
+
         if (ai.Age >= ai.toilet.AcceptableAgeForToilet)
         {
             if (ai.toilet.CurrentToilet == null || ai.toilet.CurrentToilet.IsOccupied && ai.toilet.CurrentToilet.CurrentAI != ai)
