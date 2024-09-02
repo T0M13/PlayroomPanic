@@ -23,6 +23,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
         if (oneTimeInteraction)
             hasInteracted = true;
+
+        Debug.Log("Interacted with: " + gameObject.name);
     }
 
     public float InteractionThreshhold()

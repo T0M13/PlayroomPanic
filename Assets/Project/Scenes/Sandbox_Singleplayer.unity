@@ -1753,8 +1753,6 @@ MonoBehaviour:
     currentToilet: {fileID: 0}
     needsDiaperChange: 0
     onDiaperChanger: 0
-  playfulness:
-    value: 0.5
   placementCategory: 1
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
@@ -1983,8 +1981,6 @@ MonoBehaviour:
     currentToilet: {fileID: 0}
     needsDiaperChange: 0
     onDiaperChanger: 0
-  playfulness:
-    value: 0.5
   placementCategory: 1
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
@@ -2261,7 +2257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rbody: {fileID: 1482222776}
   objCollider: {fileID: 1482222777}
-  placementCategory: 0
+  placementCategory: 2
   spawnPoint: {x: 0, y: 0, z: 0}
   spawnPointOffset: {x: 0, y: 0, z: 0}
   isPickedUp: 0
@@ -2811,7 +2807,7 @@ PrefabInstance:
     - target: {fileID: 4845276930943762971, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000022888184
+      value: -0.000019073486
       objectReference: {fileID: 0}
     - target: {fileID: 4845637959249703711, guid: 2da3dcc22749e7f4280737786d898334,
         type: 3}
@@ -3078,15 +3074,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 7
-  currentHour: 7
+  currentHour: 6
   timePerHourInSeconds: 50
   timeAccumulator: 0
   dayEvents: []
   currentTimeOfDay: 0
+  openingTime: {x: 6, y: 7}
   morningTime: {x: 7, y: 9}
   midMorningTime: {x: 9, y: 12}
   afternoonTime: {x: 12, y: 15}
-  lateAfternoonTime: {x: 15, y: 17}
+  lateAfternoonTime: {x: 15, y: 16}
+  closingTime: {x: 16, y: 17}
 --- !u!4 &1522179822
 Transform:
   m_ObjectHideFlags: 0

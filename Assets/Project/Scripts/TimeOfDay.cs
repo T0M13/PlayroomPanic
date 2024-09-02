@@ -1,8 +1,10 @@
 public enum TimeOfDay
 {
+    Opening,
     Morning,
     MidMorning,
     Afternoon,
     LateAfternoon,
-    Evening
+    Closing,
+    Closed
 }

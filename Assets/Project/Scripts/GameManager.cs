@@ -22,10 +22,12 @@ public class GameManager : MonoBehaviour
     private TimeOfDay previousTimeOfDay;
 
     [Header("Time Sections")]
+    [SerializeField] private Vector2 openingTime = new Vector2(6, 7);
     [SerializeField] private Vector2 morningTime = new Vector2(7, 9);
     [SerializeField] private Vector2 midMorningTime = new Vector2(9, 12);
     [SerializeField] private Vector2 afternoonTime = new Vector2(12, 15);
-    [SerializeField] private Vector2 lateAfternoonTime = new Vector2(15, 17);
+    [SerializeField] private Vector2 lateAfternoonTime = new Vector2(15, 16);
+    [SerializeField] private Vector2 closingTime = new Vector2(16, 17);
 
     private bool isTimeOfDayChanged = false;
 
@@ -92,7 +94,11 @@ public class GameManager : MonoBehaviour
 
     private TimeOfDay DetermineTimeOfDay()
     {
-        if (currentHour >= morningTime.x && currentHour < morningTime.y)
+        if (currentHour >= openingTime.x && currentHour < openingTime.y)
+        {
+            return TimeOfDay.Opening;
+        }
+        else if (currentHour >= morningTime.x && currentHour < morningTime.y)
         {
             return TimeOfDay.Morning;
         }
@@ -108,9 +114,13 @@ public class GameManager : MonoBehaviour
         {
             return TimeOfDay.LateAfternoon;
         }
+        else if (currentHour >= closingTime.x && currentHour < closingTime.y)
+        {
+            return TimeOfDay.Closing;
+        }
         else
         {
-            return TimeOfDay.Evening;
+            return TimeOfDay.Closed;
         }
     }
 
