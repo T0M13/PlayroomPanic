@@ -11,12 +11,15 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     [SerializeField] private NavMeshAgent navMeshAgent;
     [SerializeField] private Collider aiCollider;
     [SerializeField] private Rigidbody aiBody;
+    [SerializeField] private ChildUI childUI;
+    [SerializeField] private AIInteractor aiinteractor;
     [Header("Tasks")]
     public List<AIBrain> availableTasks = new List<AIBrain>();
     [SerializeField] private AIBrain currentTask;
     [Header("Status")]
     [SerializeField][Range(1, 6)] private int age = 3;
     [Header("Needs")]
+    [SerializeField][ShowOnly] private bool hasUnmetNeed = false;
     public Energy energy = new Energy();
     public ToiletNeed toilet = new ToiletNeed();
 
@@ -38,6 +41,8 @@ public class AIAgent : MonoBehaviour, IHoldableObject
     public NavMeshAgent NavMeshAgent { get => navMeshAgent; set => navMeshAgent = value; }
     public AIBrain CurrentTask { get => currentTask; set => currentTask = value; }
     public int Age { get => age; set => age = value; }
+    public ChildUI ChildUI { get => childUI; set => childUI = value; }
+    public AIInteractor Aiinteractor { get => aiinteractor; set => aiinteractor = value; }
 
     private void OnEnable()
     {
@@ -111,6 +116,14 @@ public class AIAgent : MonoBehaviour, IHoldableObject
         {
             aiBody = GetComponent<Rigidbody>();
         }
+        if (childUI == null)
+        {
+            childUI = GetComponentInChildren<ChildUI>();
+        }
+        if (Aiinteractor == null)
+        {
+            Aiinteractor = GetComponentInChildren<AIInteractor>();
+        }
     }
 
     private void Update()
@@ -154,6 +167,31 @@ public class AIAgent : MonoBehaviour, IHoldableObject
         }
 
         return bestTask;
+    }
+
+    public void CheckNeeds()
+    {
+        if (toilet.NeedsDiaperChange)
+        {
+            EnterNeedState("Needs diaper change.");
+        }
+
+    }
+
+    public void EnterNeedState(string message)
+    {
+        navMeshAgent.isStopped = true;
+        hasUnmetNeed = true;
+        //currentTask = waitingTask; // Switch to the waiting task
+        Debug.Log($"{gameObject.name} is waiting: {message}");
+    }
+
+    public void ResolveNeed()
+    {
+        hasUnmetNeed = false;
+        navMeshAgent.isStopped = false;
+        //currentTask = ChooseBestTask();
+        Debug.Log($"{gameObject.name} need resolved.");
     }
 
     public bool IsBeingHeld()

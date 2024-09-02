@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerUI : MonoBehaviour
+public class ChildUI : MonoBehaviour
 {
 
     [Header("References")]
-    [SerializeField] private PlayerReferences playerReferences;
+    [SerializeField] private AIAgent aI;
     [SerializeField] private Canvas canvas;
     [SerializeField] private Slider interactionSlider;
     [SerializeField] private bool sliderActive = false;
@@ -15,7 +15,6 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private bool iconSet = false;
     [SerializeField] private Image needIcon;
     [SerializeField] private Sprite defaultIcon;
-
 
     private void OnValidate()
     {
@@ -34,9 +33,9 @@ public class PlayerUI : MonoBehaviour
 
     private void GetReferences()
     {
-        if (playerReferences == null)
+        if (aI == null)
         {
-            playerReferences = GetComponentInParent<PlayerReferences>();
+            aI = GetComponentInParent<AIAgent>();
         }
 
         if (canvas == null)
@@ -70,8 +69,8 @@ public class PlayerUI : MonoBehaviour
         if (!sliderActive) return;
 
         interactionSlider.gameObject.SetActive(false);
-        sliderActive = false;
         needIcon.sprite = defaultIcon;
+        sliderActive = false;
     }
 
     public void SetNeedIcon(NeedIcon icon)
@@ -93,5 +92,4 @@ public class PlayerUI : MonoBehaviour
         iconSet = false;
         needIcon.sprite = defaultIcon;
     }
-
 }

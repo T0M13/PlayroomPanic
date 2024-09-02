@@ -11,10 +11,20 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [SerializeField] private bool hasInteracted = false;
     [SerializeField] private bool oneTimeInteraction = false;
     [SerializeField] private float interactionHoldTime = 3f;
+    [Header("Icon Settings")]
+    [SerializeField] private NeedIcon icon;
 
     public bool HasInteracted()
     {
         return hasInteracted;
+    }
+
+    public bool HasInteractionIcon()
+    {
+        bool temp = false;
+        if(icon)
+            temp = true;
+        return temp;
     }
 
     public virtual void Interact()
@@ -24,7 +34,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
         if (oneTimeInteraction)
             hasInteracted = true;
 
-        Debug.Log("Interacted with: " + gameObject.name);
+        //Debug.Log("Interacted with: " + gameObject.name);
+    }
+
+    public virtual NeedIcon InteractionIcon()
+    {
+        return icon;
     }
 
     public float InteractionThreshhold()

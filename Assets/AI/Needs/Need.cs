@@ -5,7 +5,7 @@ namespace AI_Needs
     [System.Serializable]
     public class Need
     {
-        [SerializeField][ShowOnly] private NeedType needType;
+        [SerializeField] private NeedType needType;
         [Range(1, 100)] public float initialValue;
         [SerializeField][ShowOnly] private float currentValue;
         [SerializeField][Range(1, 100)] private float decayRate;

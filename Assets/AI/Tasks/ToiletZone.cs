@@ -4,7 +4,6 @@ using UnityEngine;
 public class ToiletZone : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private int ageAcceptance = 3;
     [SerializeField] private float zoneRadius = 2f;
     [SerializeField] private bool isOccupied = false;
     [SerializeField][ShowOnly] private AIAgent currentAI;

@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     // Singleton Instance
     public static GameManager Instance { get; private set; }
+    public float CurrentHour { get => currentHour; set => currentHour = value; }
+    public TimeOfDay CurrentTimeOfDay { get => currentTimeOfDay; set => currentTimeOfDay = value; }
 
     [Header("Time Settings")]
     [SerializeField] private float timeScale = 1f;
@@ -71,8 +73,8 @@ public class GameManager : MonoBehaviour
 
     private void IncrementHour()
     {
-        currentHour++;
-        if (currentHour >= 24) currentHour = 0;
+        CurrentHour++;
+        if (CurrentHour >= 24) CurrentHour = 0;
         HourIncremented();
         UpdateTimeOfDay(false);
         CheckEventsForCurrentHour();
@@ -82,39 +84,39 @@ public class GameManager : MonoBehaviour
     {
         TimeOfDay newTimeOfDay = DetermineTimeOfDay();
 
-        isTimeOfDayChanged = (newTimeOfDay != currentTimeOfDay) || forceUpdate;
+        isTimeOfDayChanged = (newTimeOfDay != CurrentTimeOfDay) || forceUpdate;
 
         if (isTimeOfDayChanged)
         {
-            previousTimeOfDay = currentTimeOfDay;
-            currentTimeOfDay = newTimeOfDay;
+            previousTimeOfDay = CurrentTimeOfDay;
+            CurrentTimeOfDay = newTimeOfDay;
             OnTimeOfDayChanged();
         }
     }
 
     private TimeOfDay DetermineTimeOfDay()
     {
-        if (currentHour >= openingTime.x && currentHour < openingTime.y)
+        if (CurrentHour >= openingTime.x && CurrentHour < openingTime.y)
         {
             return TimeOfDay.Opening;
         }
-        else if (currentHour >= morningTime.x && currentHour < morningTime.y)
+        else if (CurrentHour >= morningTime.x && CurrentHour < morningTime.y)
         {
             return TimeOfDay.Morning;
         }
-        else if (currentHour >= midMorningTime.x && currentHour < midMorningTime.y)
+        else if (CurrentHour >= midMorningTime.x && CurrentHour < midMorningTime.y)
         {
             return TimeOfDay.MidMorning;
         }
-        else if (currentHour >= afternoonTime.x && currentHour < afternoonTime.y)
+        else if (CurrentHour >= afternoonTime.x && CurrentHour < afternoonTime.y)
         {
             return TimeOfDay.Afternoon;
         }
-        else if (currentHour >= lateAfternoonTime.x && currentHour < lateAfternoonTime.y)
+        else if (CurrentHour >= lateAfternoonTime.x && CurrentHour < lateAfternoonTime.y)
         {
             return TimeOfDay.LateAfternoon;
         }
-        else if (currentHour >= closingTime.x && currentHour < closingTime.y)
+        else if (CurrentHour >= closingTime.x && CurrentHour < closingTime.y)
         {
             return TimeOfDay.Closing;
         }
@@ -144,7 +146,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (var dayEvent in dayEvents)
         {
-            if (Mathf.Floor(currentHour) == dayEvent.hour)
+            if (Mathf.Floor(CurrentHour) == dayEvent.hour)
             {
                 dayEvent.TriggerEvent(); // Trigger specific game events
             }
@@ -154,10 +156,10 @@ public class GameManager : MonoBehaviour
     // Displays current time - call this only when necessary to avoid performance impact
     private void DisplayCurrentTime()
     {
-        string ampm = currentHour >= 12 ? "PM" : "AM";
-        int hour = Mathf.FloorToInt(currentHour) % 12;
+        string ampm = CurrentHour >= 12 ? "PM" : "AM";
+        int hour = Mathf.FloorToInt(CurrentHour) % 12;
         if (hour == 0) hour = 12; // Handle midnight/noon edge cases
-        string timeText = $"{hour}:{(currentHour % 1) * 60:00} {ampm}";
+        string timeText = $"{hour}:{(CurrentHour % 1) * 60:00} {ampm}";
         // Debug.Log("Current Time: " + timeText); // Use UI to display instead of continuous logging
     }
 }

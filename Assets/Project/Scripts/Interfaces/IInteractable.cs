@@ -6,8 +6,8 @@ public interface IInteractable
     public void SetInteractable(bool value);
     public bool IsOnlyInteractableWhenPlaced();
     public bool IsOnlyInteractableWhenNeeded();
-    public bool HasInteracted();
-    public bool OneTimeInteraction();
     public float InteractionThreshhold();
+    public bool HasInteractionIcon();
+    public NeedIcon InteractionIcon();
 
 }

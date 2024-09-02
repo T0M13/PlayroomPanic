@@ -342,8 +342,8 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (isInteracting && currentHoldableObject != null)
         {
+            playerReferences.PlayerUI.SetNeedIcon(currentHoldableObject.InteractableOfObject().InteractionIcon());
             playerReferences.PlayerUI.SetSliderMaxValue(currentHoldableObject.InteractableOfObject().InteractionThreshhold());
-
             playerReferences.PlayerUI.UpdateSliderValue(interactionHoldTime);
 
             interactionHoldTime += Time.deltaTime;
@@ -388,6 +388,8 @@ public class PlayerInteractor : MonoBehaviour
         isInteracting = false;
         interactionHoldTime = 0f;
         playerReferences.PlayerUI.DeactivateSlider();
+        playerReferences.PlayerUI.SetDefaultIconAndOff();
+
     }
 
     private void OnDrawGizmosSelected()

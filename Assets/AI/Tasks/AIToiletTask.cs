@@ -35,8 +35,9 @@ public class AIToiletTask : AIBrain
 
         if (!ai.toilet.NeedsDiaperChange && ai.Age < ai.toilet.AcceptableAgeForToilet)
         {
-            ai.NavMeshAgent.isStopped = true;
             ai.toilet.NeedsDiaperChange = true;
+            ai.toilet.DisplayNeedUI(ai.ChildUI);
+            ai.CheckNeeds();
         }
 
     }

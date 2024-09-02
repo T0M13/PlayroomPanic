@@ -15,6 +15,8 @@ public class DiaperChanger : PlacementZone
         if (ai != null)
         {
             ai.toilet.OnDiaperChanger = IsOccupied;
+            if (ai.toilet.NeedsDiaperChange)
+                ai.toilet.NoDisplayNeedUI(ai.ChildUI);
         }
     }
 
@@ -25,6 +27,8 @@ public class DiaperChanger : PlacementZone
         if (ai != null)
         {
             ai.toilet.OnDiaperChanger = IsOccupied;
+            if (ai.toilet.NeedsDiaperChange)
+                ai.toilet.DisplayNeedUI(ai.ChildUI);
         }
     }
 
